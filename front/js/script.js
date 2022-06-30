@@ -1,15 +1,16 @@
 const productSection = document.getElementById('items');
 
-let productDetails = [];
 
+let productDetails = [];
 let image = [];
 let imageAlt = [];
-
 let newProduct = [];
 let newImg = [];
 let newName = [];
 let newDescription = [];
 let newLink = [];
+let newId = [];
+
 
 
 // fuction that gets the product info from the server and 
@@ -43,10 +44,9 @@ getProductWithPromise().then((productInfo) => {
 
     productDetails = productInfo;
 
-
-
     for (let i = 0; i < productInfo.length; i++) {
 
+        newId[i] = productDetails[i]._id;
         image[i] = productDetails[i].imageUrl;
         imageAlt[i] = productDetails[i].altTxt;
 
@@ -56,7 +56,7 @@ getProductWithPromise().then((productInfo) => {
         newName[i] = document.createElement('h3');
         newDescription[i] = document.createElement('p');
 
-        newLink[i].href = "./product.html?id=42";
+        newLink[i].href = "./product.html?" + "id=" + newId[i];
         newImg[i].src = image[i];
         newImg[i].alt = imageAlt[i];
 
@@ -66,7 +66,7 @@ getProductWithPromise().then((productInfo) => {
         newProduct[i].appendChild(newImg[i]);
         newProduct[i].appendChild(newName[i]);
         newProduct[i].appendChild(newDescription[i]);
-        
+
         newLink[i].appendChild(newProduct[i])
 
         productSection.appendChild(newLink[i]);
@@ -75,3 +75,7 @@ getProductWithPromise().then((productInfo) => {
         newDescription[i].classList.add('productDescription');
     }
 })
+
+
+
+
