@@ -16,6 +16,7 @@ let newId = [];
 // fuction that gets the product info from the server and 
 // returns a promise
 
+
 async function getProductWithPromise() {
     let apiRequest = new XMLHttpRequest();
 
@@ -50,11 +51,7 @@ getProductWithPromise().then((productInfo) => {
         image[i] = productDetails[i].imageUrl;
         imageAlt[i] = productDetails[i].altTxt;
 
-        newLink[i] = document.createElement('a');
-        newProduct[i] = document.createElement('article');
-        newImg[i] = document.createElement('img');
-        newName[i] = document.createElement('h3');
-        newDescription[i] = document.createElement('p');
+        doingsomething(i);
 
         newLink[i].href = "./product.html?" + "id=" + newId[i];
         newImg[i].src = image[i];
@@ -78,4 +75,12 @@ getProductWithPromise().then((productInfo) => {
 
 
 
+
+function doingsomething(i) {
+    newLink[i] = document.createElement('a');
+    newProduct[i] = document.createElement('article');
+    newImg[i] = document.createElement('img');
+    newName[i] = document.createElement('h3');
+    newDescription[i] = document.createElement('p');
+}
 
