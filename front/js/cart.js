@@ -138,6 +138,32 @@ getProductWithPromise().then((product) => {
         newContentDiv[i].appendChild(newSettingsDeleteDiv[i]);
         newSettingsDeleteDiv[i].appendChild(newDeleteP[i]);
 
+        
+    newDeleteP[i].addEventListener('click', function ()  {
+        
+        cart.splice(i, 1); 
+        newArticle[i].remove();
+        window.localStorage.setItem('cartItem', JSON.stringify(cart));
+
+    })
+
+    newQuantityInput[i].addEventListener('change', function ()  {
+        
+        cartItem[2] = newQuantityInput[i].value;
+
+        if(cartItem[2] > 100){
+            cartItem[2] = 100;
+        }
+
+        if(cartItem[2] < 0){
+            cartItem[2] = 0;
+        }
+
+        cart[i] = JSON.stringify(cartItem);
+        window.localStorage.setItem('cartItem', JSON.stringify(cart));
+        console.log(cartItem[2]);
+
+    })
 
 
 
