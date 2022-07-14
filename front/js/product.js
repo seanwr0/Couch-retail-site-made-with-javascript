@@ -5,8 +5,12 @@ let description = document.getElementById('description');
 let colors = document.getElementById('colors');
 let addToCart = document.getElementById('addToCart');
 let productQuantity = document.getElementById('quantity');
-let itemsForCart =  JSON.parse(window.localStorage.getItem('cartItem'));
+let itemsForCart = [];
 
+if (window.localStorage.getItem('cartItem')) {
+
+    itemsForCart = JSON.parse(window.localStorage.getItem('cartItem'));
+}
 let newTitle = " ";
 let newPrice;
 let newDescription;
@@ -102,55 +106,61 @@ addToCart.addEventListener('click', () => {
     let infoForCartFind = [id, itemColor];
 
     quantity = parseInt(quantity, 10)
+
+    if (quantity > 100) {
+        quantity = 100;
+    }
+
+    if (quantity < 0) {
+        quantity = 0;
+    }
     infoForCartFind = JSON.stringify(infoForCartFind);
 
-    if (itemColor < 1 || quantity < 1){
-        
-    }
-    else{
-
-    if (itemsForCart.length < 1) {
-        itemsForCart.push(JSON.stringify(infoForCart));
-        console.log(itemsForCart);
+    if (itemColor < 1 || quantity < 1) {
 
     } else {
-        let substring = infoForCartFind.replace(/\[|\]/g, '');
 
-        let index = itemsForCart.findIndex(element => {
-            if (element.includes(substring)) {
-                return true;
-            }
-        });
-
-        if (index >= 0) {
-            quantityChange = JSON.parse(itemsForCart[index]);
-
-            quantityChange2 = quantityChange[2]
-            quantityChange2 = parseInt(quantityChange2, 10);
-            quantityChange2 += quantity;
-
-            quantityChange[2] = quantityChange2;
-
-            itemsForCart[index] = JSON.stringify(quantityChange);
-
+        if (itemsForCart.length < 1) {
+            itemsForCart.push(JSON.stringify(infoForCart));
+            console.log(itemsForCart);
 
         } else {
-            itemsForCart.push(JSON.stringify(infoForCart));
+            let substring = infoForCartFind.replace(/\[|\]/g, '');
+
+            let index = itemsForCart.findIndex(element => {
+                if (element.includes(substring)) {
+                    return true;
+                }
+            });
+
+            if (index >= 0) {
+                quantityChange = JSON.parse(itemsForCart[index]);
+
+                quantityChange2 = quantityChange[2]
+                quantityChange2 = parseInt(quantityChange2, 10);
+                quantityChange2 += quantity;
+
+                quantityChange[2] = quantityChange2;
+
+                itemsForCart[index] = JSON.stringify(quantityChange);
+
+
+            } else {
+                itemsForCart.push(JSON.stringify(infoForCart));
+            }
+
+
+            // console.log(itemsForCart);
+            // console.log(substring);
+            console.log(index);
+            console.log(quantityChange2);
         }
 
 
-        // console.log(itemsForCart);
-        // console.log(substring);
-        console.log(index);
-        console.log(quantityChange2);
+        window.localStorage.setItem('cartItem', JSON.stringify(itemsForCart));
+
+
     }
 
 
-    window.localStorage.setItem('cartItem', JSON.stringify(itemsForCart));
-
-   
-}
-    
-
 })
-
