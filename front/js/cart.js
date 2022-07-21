@@ -1,4 +1,3 @@
-
 // get elements from the dom
 let cart = JSON.parse(window.localStorage.getItem('cartItem'));
 let cartSection = document.getElementById('cart__items');
@@ -50,6 +49,90 @@ let price = 0;
 let quantity = 0;
 
 
+const createProductsAndAddToPage = (product) => {
+
+    productInfo = product;
+
+    //updates the total quantity information 
+    addPriceAndQuantityToPage();
+
+
+
+    for (let i = 0; i < cart.length; i++) {
+
+        let cartItem = JSON.parse(cart[i]);
+
+
+        const index = productInfo.findIndex((element) => element._id === cartItem[0]);
+
+
+        createDomElement(i, index);
+        addClassesToDomElements(i, cartItem);
+
+        // add text content to DOM elements
+        newNameH2[i].textContent = productInfo[index].name;
+        newColorP[i].textContent = cartItem[1];
+        newPriceP[i].textContent = "$" + productInfo[index].price;
+        newQuantityP[i].textContent = "Quantity";
+        newDeleteP[i].textContent = "Delete";
+
+        // appand new elements to the DOM
+        cartSection.appendChild(newArticle[i]);
+
+        newArticle[i].appendChild(newImageDiv[i]);
+        newImageDiv[i].appendChild(newImg[i]);
+
+        newArticle[i].appendChild(newContentDiv[i]);
+
+        newContentDiv[i].appendChild(newDescriptionDiv[i]);
+        newDescriptionDiv[i].appendChild(newNameH2[i]);
+        newDescriptionDiv[i].appendChild(newColorP[i]);
+        newDescriptionDiv[i].appendChild(newPriceP[i]);
+
+        newContentDiv[i].appendChild(newSettingsDiv[i]);
+        newSettingsDiv[i].appendChild(newSettingsQuantityDiv[i]);
+        newSettingsQuantityDiv[i].appendChild(newQuantityP[i]);
+        newSettingsQuantityDiv[i].appendChild(newQuantityInput[i]);
+
+        newContentDiv[i].appendChild(newSettingsDeleteDiv[i]);
+        newSettingsDeleteDiv[i].appendChild(newDeleteP[i]);
+
+        // adds the ability to delete products from the cart
+        newDeleteP[i].addEventListener('click', function () {
+
+            cart.splice(i, 1);
+            newArticle[i].remove();
+            window.localStorage.setItem('cartItem', JSON.stringify(cart));
+            addPriceAndQuantityToPage();
+
+        });
+
+        // adds the ability to change quantity of product 
+        newQuantityInput[i].addEventListener('change', function () {
+
+            cartItem[2] = newQuantityInput[i].value;
+
+            if (cartItem[2] > 100) {
+                cartItem[2] = 100;
+            }
+
+            if (cartItem[2] < 0) {
+                cartItem[2] = 0;
+            }
+
+            cart[i] = JSON.stringify(cartItem);
+            window.localStorage.setItem('cartItem', JSON.stringify(cart));
+            addPriceAndQuantityToPage();
+
+
+        });
+
+    }
+
+};
+
+
+
 
 // fuction that gets the product info from the server and 
 // returns a promise
@@ -77,129 +160,7 @@ async function getProductWithPromise() {
 
 // calls the getProductWithPromise function then use that to create the products 
 // and add them to the page
-getProductWithPromise().then((product) => {
-    productInfo = product;
-
-    //updates the total quantity information 
-
-    addPriceAndQuantityToPage();
-
-
-
-    for (let i = 0; i < cart.length; i++) {
-
-        let cartItem = JSON.parse(cart[i]);
-
-
-        const index = productInfo.findIndex((element) => element._id === cartItem[0]);
-
-        // create DOM elements 
-        newArticle[i] = document.createElement('article');
-
-        newImageDiv[i] = document.createElement('div');
-        newImg[i] = document.createElement('img');
-        newImg[i].src = productInfo[index].imageUrl;
-        newImg[i].alt = productInfo[index].altTxt;
-
-        newContentDiv[i] = document.createElement('div');
-
-        newDescriptionDiv[i] = document.createElement('div');
-        newNameH2[i] = document.createElement('h2');
-        newColorP[i] = document.createElement('p');
-        newPriceP[i] = document.createElement('p');
-
-        newSettingsDiv[i] = document.createElement('div');
-        newSettingsQuantityDiv[i] = document.createElement('div');
-        newQuantityP[i] = document.createElement('p');
-        newQuantityInput[i] = document.createElement('input');
-
-        newSettingsDeleteDiv[i] = document.createElement('div');
-        newDeleteP[i] = document.createElement('p');
-
-        // add classes to DOM elements
-        newArticle[i].classList.add('cart__item');
-        newArticle[i].dataset.id = cartItem[0];
-        newArticle[i].dataset.color = cartItem[1];
-
-        newImageDiv[i].classList.add('cart__item__img');
-        newContentDiv[i].classList.add('cart__item__content');
-        newDescriptionDiv[i].classList.add('cart__item__content__description');
-        newSettingsDiv[i].classList.add('cart__item__content__settings');
-        newSettingsQuantityDiv[i].classList.add('cart__item__content__settings__quantity');
-        newQuantityInput[i].classList.add('itemQuantity');
-        newSettingsDeleteDiv[i].classList.add('cart__item__content__settings__delete');
-        newDeleteP[i].classList.add('deleteItem');
-
-        newQuantityInput[i].type = "number";
-        newQuantityInput[i].name = "itemQuantity";
-        newQuantityInput[i].min = "0";
-        newQuantityInput[i].max = "100";
-        newQuantityInput[i].value = cartItem[2];
-
-        // add text content to DOM elements
-        newNameH2[i].textContent = productInfo[index].name;
-        newColorP[i].textContent = cartItem[1];
-        newPriceP[i].textContent = "$" + productInfo[index].price;
-        console.log(cartItem)
-
-        newQuantityP[i].textContent = "Quantity";
-
-        newDeleteP[i].textContent = "Delete";
-
-        // appand new elements to the DOM
-        cartSection.appendChild(newArticle[i]);
-
-        newArticle[i].appendChild(newImageDiv[i]);
-        newImageDiv[i].appendChild(newImg[i]);
-
-        newArticle[i].appendChild(newContentDiv[i]);
-
-        newContentDiv[i].appendChild(newDescriptionDiv[i]);
-        newDescriptionDiv[i].appendChild(newNameH2[i]);
-        newDescriptionDiv[i].appendChild(newColorP[i]);
-        newDescriptionDiv[i].appendChild(newPriceP[i]);
-
-        newContentDiv[i].appendChild(newSettingsDiv[i]);
-        newSettingsDiv[i].appendChild(newSettingsQuantityDiv[i]);
-        newSettingsQuantityDiv[i].appendChild(newQuantityP[i])
-        newSettingsQuantityDiv[i].appendChild(newQuantityInput[i]);
-
-        newContentDiv[i].appendChild(newSettingsDeleteDiv[i]);
-        newSettingsDeleteDiv[i].appendChild(newDeleteP[i]);
-
-        // adds the ability to delete products from the cart
-        newDeleteP[i].addEventListener('click', function () {
-
-            cart.splice(i, 1);
-            newArticle[i].remove();
-            window.localStorage.setItem('cartItem', JSON.stringify(cart));
-            addPriceAndQuantityToPage();
-
-        })
-
-        // adds the ability to change quantity of product 
-        newQuantityInput[i].addEventListener('change', function () {
-
-            cartItem[2] = newQuantityInput[i].value;
-
-            if (cartItem[2] > 100) {
-                cartItem[2] = 100;
-            }
-
-            if (cartItem[2] < 0) {
-                cartItem[2] = 0;
-            }
-
-            cart[i] = JSON.stringify(cartItem);
-            window.localStorage.setItem('cartItem', JSON.stringify(cart));
-            addPriceAndQuantityToPage();
-
-
-        })
-
-    }
-
-})
+getProductWithPromise().then(createProductsAndAddToPage)
 
 
 // validate the costumer contactForm info from the firstName form
@@ -287,23 +248,68 @@ orderButton.addEventListener('click', ($event) => {
         contactAndProductInfo = JSON.stringify(contactAndProductInfo);
 
         fetch("http://localhost:3000/api/products/order", {
-            method: 'post',
-            body: contactAndProductInfo,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then((response) => {
-            return response;
-
-        }).then((res) => {
-            console.log("post was made")
-        }).catch((error) => {
-            console.log(error)
-        })
+                method: 'post',
+                body: contactAndProductInfo,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json())
+            .then(data => window.location = "./confirmation.html?" + "id=" + data.orderId)
+            .catch((error) => {
+                console.log(error)
+            })
     }
 })
 
+
+
+
+
+function addClassesToDomElements(i, cartItem) {
+    newArticle[i].classList.add('cart__item');
+    newArticle[i].dataset.id = cartItem[0];
+    newArticle[i].dataset.color = cartItem[1];
+
+    newImageDiv[i].classList.add('cart__item__img');
+    newContentDiv[i].classList.add('cart__item__content');
+    newDescriptionDiv[i].classList.add('cart__item__content__description');
+    newSettingsDiv[i].classList.add('cart__item__content__settings');
+    newSettingsQuantityDiv[i].classList.add('cart__item__content__settings__quantity');
+    newQuantityInput[i].classList.add('itemQuantity');
+    newSettingsDeleteDiv[i].classList.add('cart__item__content__settings__delete');
+    newDeleteP[i].classList.add('deleteItem');
+
+    newQuantityInput[i].type = "number";
+    newQuantityInput[i].name = "itemQuantity";
+    newQuantityInput[i].min = "0";
+    newQuantityInput[i].max = "100";
+    newQuantityInput[i].value = cartItem[2];
+}
+
+function createDomElement(i, index) {
+    newArticle[i] = document.createElement('article');
+
+    newImageDiv[i] = document.createElement('div');
+    newImg[i] = document.createElement('img');
+    newImg[i].src = productInfo[index].imageUrl;
+    newImg[i].alt = productInfo[index].altTxt;
+
+    newContentDiv[i] = document.createElement('div');
+
+    newDescriptionDiv[i] = document.createElement('div');
+    newNameH2[i] = document.createElement('h2');
+    newColorP[i] = document.createElement('p');
+    newPriceP[i] = document.createElement('p');
+
+    newSettingsDiv[i] = document.createElement('div');
+    newSettingsQuantityDiv[i] = document.createElement('div');
+    newQuantityP[i] = document.createElement('p');
+    newQuantityInput[i] = document.createElement('input');
+
+    newSettingsDeleteDiv[i] = document.createElement('div');
+    newDeleteP[i] = document.createElement('p');
+}
 
 function addPriceAndQuantityToPage() {
 
@@ -319,7 +325,6 @@ function addPriceAndQuantityToPage() {
         price += parseInt(productInfo[index].price * cartItem[2]);
 
     }
-    console.log(price);
     totalPrice.textContent = price;
     totalQuantity.textContent = quantity;
 }
@@ -346,7 +351,6 @@ function addIdTooProductIdArray() {
         productId[i] = cartItem[0];
 
     }
-    console.log(productId);
 }
 
 // checks if info entered by customer is valid
