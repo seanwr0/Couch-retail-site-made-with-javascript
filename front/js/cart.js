@@ -1,6 +1,31 @@
+
+// get elements from the dom
 let cart = JSON.parse(window.localStorage.getItem('cartItem'));
 let cartSection = document.getElementById('cart__items');
+let totalQuantity = document.getElementById('totalQuantity');
+let totalPrice = document.getElementById('totalPrice');
+let firstNameInput = document.getElementById('firstName');
+let firstNameError = document.getElementById('firstNameErrorMsg');
+let lastNameInput = document.getElementById('lastName');
+let lastNameError = document.getElementById('lastNameErrorMsg');
+let addressInput = document.getElementById('address');
+let addressError = document.getElementById('addressErrorMsg');
+addressError.textContent = 'Street, town, state, zip';
+let cityInput = document.getElementById('city');
+let cityError = document.getElementById('cityErrorMsg');
+let emailInput = document.getElementById('email');
+let emailError = document.getElementById('emailErrorMsg');
+let orderButton = document.getElementById('order');
 
+// create bolean variables 
+let firstNameInputValid = false;
+let lastNameInputValid = false;
+let addressInputValid = false;
+let cityInputValid = false;
+let emailInputValid = false;
+let allFormsValid = false;
+
+// create arrays
 let newArticle = [];
 let newImageDiv = [];
 let newImg = [];
@@ -15,6 +40,14 @@ let newQuantityP = [];
 let newQuantityInput = [];
 let newSettingsDeleteDiv = [];
 let newDeleteP = [];
+let contactForm = [];
+let products = [];
+let productId = [];
+let productInfo = [];
+
+// create Int variables
+let price = 0;
+let quantity = 0;
 
 
 
@@ -42,21 +75,21 @@ async function getProductWithPromise() {
 }
 
 
-
-
-
-
-
-
-
 // calls the getProductWithPromise function then use that to create the products 
 // and add them to the page
 getProductWithPromise().then((product) => {
+    productInfo = product;
+
+    //updates the total quantity information 
+
+    addPriceAndQuantityToPage();
+
+
 
     for (let i = 0; i < cart.length; i++) {
 
         let cartItem = JSON.parse(cart[i]);
-        let productInfo = product;
+
 
         const index = productInfo.findIndex((element) => element._id === cartItem[0]);
 
@@ -104,8 +137,6 @@ getProductWithPromise().then((product) => {
         newQuantityInput[i].value = cartItem[2];
 
         // add text content to DOM elements
-
-
         newNameH2[i].textContent = productInfo[index].name;
         newColorP[i].textContent = cartItem[1];
         newPriceP[i].textContent = "$" + productInfo[index].price;
@@ -116,12 +147,10 @@ getProductWithPromise().then((product) => {
         newDeleteP[i].textContent = "Delete";
 
         // appand new elements to the DOM
-
         cartSection.appendChild(newArticle[i]);
 
         newArticle[i].appendChild(newImageDiv[i]);
         newImageDiv[i].appendChild(newImg[i]);
-
 
         newArticle[i].appendChild(newContentDiv[i]);
 
@@ -138,36 +167,218 @@ getProductWithPromise().then((product) => {
         newContentDiv[i].appendChild(newSettingsDeleteDiv[i]);
         newSettingsDeleteDiv[i].appendChild(newDeleteP[i]);
 
-        
-    newDeleteP[i].addEventListener('click', function ()  {
-        
-        cart.splice(i, 1); 
-        newArticle[i].remove();
-        window.localStorage.setItem('cartItem', JSON.stringify(cart));
+        // adds the ability to delete products from the cart
+        newDeleteP[i].addEventListener('click', function () {
 
-    })
+            cart.splice(i, 1);
+            newArticle[i].remove();
+            window.localStorage.setItem('cartItem', JSON.stringify(cart));
+            addPriceAndQuantityToPage();
 
-    newQuantityInput[i].addEventListener('change', function ()  {
-        
-        cartItem[2] = newQuantityInput[i].value;
+        })
 
-        if(cartItem[2] > 100){
-            cartItem[2] = 100;
-        }
+        // adds the ability to change quantity of product 
+        newQuantityInput[i].addEventListener('change', function () {
 
-        if(cartItem[2] < 0){
-            cartItem[2] = 0;
-        }
+            cartItem[2] = newQuantityInput[i].value;
 
-        cart[i] = JSON.stringify(cartItem);
-        window.localStorage.setItem('cartItem', JSON.stringify(cart));
-        console.log(cartItem[2]);
+            if (cartItem[2] > 100) {
+                cartItem[2] = 100;
+            }
 
-    })
+            if (cartItem[2] < 0) {
+                cartItem[2] = 0;
+            }
+
+            cart[i] = JSON.stringify(cartItem);
+            window.localStorage.setItem('cartItem', JSON.stringify(cart));
+            addPriceAndQuantityToPage();
 
 
-
+        })
 
     }
 
 })
+
+
+// validate the costumer contactForm info from the firstName form
+firstNameInput.addEventListener('change', function () {
+    function onlyLettersAndSpaces(str) {
+        return /^[A-Za-z\s]*$/.test(str);
+    }
+    if (onlyLettersAndSpaces(firstNameInput.value)) {
+        firstNameError.textContent = ' ';
+        firstNameInputValid = true;
+    } else {
+        firstNameError.textContent = 'ERROR';
+        firstNameInputValid = false;
+    }
+})
+
+// validate the costumer contactForm info from the lastName form
+lastNameInput.addEventListener('change', function () {
+    function onlyLettersAndSpaces(str) {
+        return /^[A-Za-z\s]*$/.test(str);
+    }
+    if (onlyLettersAndSpaces(lastNameInput.value)) {
+        lastNameError.textContent = ' ';
+        lastNameInputValid = true;
+    } else {
+        lastNameError.textContent = 'ERROR';
+        lastNameInputValid = false;
+    }
+})
+
+// validate the costumer contactForm info from the address form
+addressInput.addEventListener('change', function () {
+    function onlyLettersAndSpaces(str) {
+        return /^[(\d{1,}) [a-zA-Z0-9\s]+(\.)? [a-zA-Z]+(\,)? [A-Z]{2} [0-9]{5,6}]*$/.test(str);
+    }
+    if (onlyLettersAndSpaces(addressInput.value)) {
+        addressError.textContent = 'Street, town, state, zip';
+        addressInputValid = true;
+    } else {
+        addressInputValid = false;
+        addressError.textContent = 'ERROR: Street, town, state, zip';
+    }
+})
+
+// validate the costumer contactForm info from the city form
+cityInput.addEventListener('change', function () {
+    function onlyLettersAndSpaces(str) {
+        return /^[a-zA-Z',.\s-]{1,25}$/.test(str);
+    }
+    if (onlyLettersAndSpaces(cityInput.value)) {
+        cityError.textContent = ' ';
+        cityInputValid = true;
+    } else {
+        cityError.textContent = 'ERROR';
+        cityInputValid = false;
+    }
+})
+
+// validate the costumer contactForm info from the email form
+emailInput.addEventListener('change', function () {
+    function onlyLettersAndSpaces(str) {
+        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(str);
+    }
+    if (onlyLettersAndSpaces(emailInput.value)) {
+        emailError.textContent = ' ';
+        emailInputValid = true;
+    } else {
+        emailError.textContent = 'ERROR';
+        emailInputValid = false;
+    }
+})
+
+
+// when clicked add information from forms to an array, 
+// validate the info and send to the backend when order button is pressed
+orderButton.addEventListener('click', ($event) => {
+    productId = [];
+
+    $event.preventDefault();
+    checkFormValid();
+    if (allFormsValid == true) {
+        addIdTooProductIdArray();
+
+        let contactAndProductInfo = createContactProductInfo();
+        contactAndProductInfo = JSON.stringify(contactAndProductInfo);
+
+        fetch("http://localhost:3000/api/products/order", {
+            method: 'post',
+            body: contactAndProductInfo,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            return response;
+
+        }).then((res) => {
+            console.log("post was made")
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+})
+
+
+function addPriceAndQuantityToPage() {
+
+    parseInt(price = 0);
+    parseInt(quantity = 0);
+
+    for (let i = 0; i < cart.length; i++) {
+
+        let cartItem = JSON.parse(cart[i]);
+        let index = productInfo.findIndex((element) => element._id === cartItem[0]);
+
+        quantity += parseInt(cartItem[2]);
+        price += parseInt(productInfo[index].price * cartItem[2]);
+
+    }
+    console.log(price);
+    totalPrice.textContent = price;
+    totalQuantity.textContent = quantity;
+}
+
+// adds the information from the forms, and all the IDs from the products in the cart, and adds them to an array
+function createContactProductInfo() {
+    return {
+        "contact": {
+            "firstName": contactForm[0],
+            "lastName": contactForm[1],
+            "address": contactForm[2],
+            "city": contactForm[3],
+            "email": contactForm[4],
+        },
+        "products": productId
+    };
+}
+
+// adds product IDs from the products in the cart, and adds them to an array
+function addIdTooProductIdArray() {
+    for (let i = 0; i < cart.length; i++) {
+
+        let cartItem = JSON.parse(cart[i]);
+        productId[i] = cartItem[0];
+
+    }
+    console.log(productId);
+}
+
+// checks if info entered by customer is valid
+function checkFormValid() {
+    if (firstNameInputValid == true) {
+        contactForm[0] = firstNameInput.value;
+        allFormsValid = true;
+    } else {
+        allFormsValid = false;
+    }
+    if (lastNameInputValid == true) {
+        contactForm[1] = lastNameInput.value;
+        allFormsValid = true;
+    } else {
+        allFormsValid = false;
+    }
+    if (addressInputValid == true) {
+        contactForm[2] = addressInput.value;
+        allFormsValid = true;
+    } else {
+        allFormsValid = false;
+    }
+    if (cityInputValid == true) {
+        contactForm[3] = cityInput.value;
+        allFormsValid = true;
+    } else {
+        allFormsValid = false;
+    }
+    if (emailInputValid == true) {
+        contactForm[4] = emailInput.value;
+        allFormsValid = true;
+    } else {
+        allFormsValid = false;
+    }
+}
