@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-chrome",
+            "type": "chrome",
             "request": "launch",
             "name": "Open index.html",
-            "file": "c:\\Users\\imjus\\Desktop\\P5-Web-Dev-Kanap-master\\front\\html\\index.html"
+            "file": "c:\\Users\\imjus\\Desktop\\Couch-retail-site-made-with-javascript\\front\\html\\index.html"
         }
     ]
 }

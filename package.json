@@ -1,0 +1,19 @@
+{
+  "name": "couch-retail-site-made-with-javascript",
+  "version": "1.0.0",
+  "description": "This is the front end and back end server for Project 5 of the Web Developer path.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seanwr0/Couch-retail-site-made-with-javascript.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seanwr0/Couch-retail-site-made-with-javascript/issues"
+  },
+  "homepage": "https://github.com/seanwr0/Couch-retail-site-made-with-javascript#readme"
+}

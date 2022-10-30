@@ -79,7 +79,7 @@ orderButton.addEventListener('click', ($event) => {
         addIdTooProductIdArray();
         let contactAndProductInfo = createContactProductInfo();
         contactAndProductInfo = JSON.stringify(contactAndProductInfo);
-        fetch("http://localhost:3000/api/products/order", {
+        fetch("https://couch-store.herokuapp.com/api/products/order", {
                 method: 'post',
                 body: contactAndProductInfo,
                 headers: {
@@ -203,7 +203,7 @@ function getProductWithPromise() {
                 }
             }
         }
-        apiRequest.open('GET', 'http://localhost:3000/api/products', true);
+        apiRequest.open('GET', 'https://couch-store.herokuapp.com/api/products', true);
         apiRequest.send();
     });
 }

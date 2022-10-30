@@ -68,7 +68,7 @@ function getProductWithPromise() {
                 }
             }
         }
-        apiRequest.open('GET', 'http://localhost:3000/api/products', true);
+        apiRequest.open('GET', 'https://couch-store.herokuapp.com/api/products', true);
         apiRequest.send();
     });
 }
